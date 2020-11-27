@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cqie.mapper.TeacherMapper">
+    <!--我所有的课程-->
+    <select id="getMyCourse" resultType="Course">
+        select * from course where tcode = #{tcode} ;
+    </select>
+    <!--  搜索课程  -->
+    <select id="tGetSomeCourse" resultType="Course">
+        select * from course where cname like concat('%',#{str},'%')
+    </select>
+
+    <!--    查询开启的课程  -->
+    <select id="getMyCourseOn" resultType="Course">
+        select * from course where tcode = #{tcode} and state = 1;
+    </select>
+
+    <!--    查询开启的课程  -->
+    <select id="getMyCourseOff" resultType="Course">
+        select * from course where tcode = #{tcode} and state = 0;
+    </select>
+
+    <!--  添加课程  -->
+    <insert id="doAdd" parameterType="Course">
+        insert into course (cname,tcode,tname,state,img,video) values (#{cname},#{tcode},#{tname},#{state},#{img},#{video})
+    </insert>
+</mapper>

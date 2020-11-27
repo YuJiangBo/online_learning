@@ -1,0 +1,17 @@
+* {
+    padding: 0;
+    margin:0
+
+}
+a{
+    text-decoration: none;
+}
+ul,li,ol{
+    list-style: none;
+}
+img{
+    border: 0;
+}
+.clear{
+    clear: both;
+}

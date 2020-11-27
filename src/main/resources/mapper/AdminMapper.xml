@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cqie.mapper.AdminMapper">
+
+    <!--    查询开启的课程  -->
+    <select id="getAllCourse" resultType="Course">
+        select * from course where state = 1
+    </select>
+
+    <!--  最新推荐  -->
+    <select id="getRecommend" resultType="Course">
+        select * from course order by id desc limit 4;
+    </select>
+    <!--  所有用户  -->
+    <select id="getAllUser" resultType="User">
+        select * from user order by id ASC
+    </select>
+    <!--  搜索用户  -->
+    <select id="getSomeUsers" resultType="User">
+        select * from user where code like concat('%',#{s},'%') or name like concat('%',#{s},'%')
+    </select>
+    <!--  添加用户  -->
+    <insert id="addUser" parameterType="User">
+        insert into user (code,name,password,perms) values (#{code},#{name},#{password},#{perms})
+    </insert>
+    <!--  修改用户  -->
+    <update id="updateUser" parameterType="User">
+        update user set
+        <trim suffixOverrides=",">
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="perms != null and perms != ''">
+                perms = #{perms}
+            </if>
+        </trim>
+         where code = #{code}
+    </update>
+    <!--  删除用户  -->
+    <delete id="deleteUser" parameterType="String">
+        delete from user where code = #{code}
+    </delete>
+
+    <!--  修改角色  -->
+    <update id="updateRole" parameterType="String">
+        update user set perms = #{perms} where code = #{code}
+    </update>
+
+    <!--    查询所有课程（包括关闭的课程）  -->
+    <select id="allCourse" resultType="Course">
+        select * from course
+    </select>
+    <!--    查询所有课程（名称不重复）  -->
+    <select id="getCourseName" resultType="Course">
+        SELECT * from course as cou WHERE not EXISTS(SELECT * from course WHERE cname = cou.cname and id>cou.id)
+    </select>
+
+    <!--  搜索课程  -->
+    <select id="getSomeCourse" resultType="Course">
+        select * from course where cname like concat('%',#{str},'%') or tname like concat('%',#{str},'%')
+    </select>
+    <!--  修改课程状态  -->
+    <update id="updateCouState" parameterType="int">
+        update course set state = #{state} where id = #{id}
+    </update>
+    <!--  删除课程  -->
+    <delete id="deleteCourse" parameterType="int">
+        delete from course where id = #{id}
+    </delete>
+    <!--    根据课程id查询课程  -->
+    <select id="oneCourse" resultType="Course">
+        select * from course where id = #{id}
+    </select>
+</mapper>

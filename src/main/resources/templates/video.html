@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1; shrink-to-fit=no" />
+    <title>video</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/iconfont.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/myblog.css}">
+</head>
+<body>
+<div class="m-container-l m-mobile-lr-clear text-center">
+    <h1 th:text="${course.getCname()}"></h1>
+    <h4 th:text="${course.getTname()}" class="m-text-content"></h4>
+    <input type="hidden" id="videoUrl">
+    <input type="hidden" id="videoPic">
+    <div id="dplayer"></div>
+</div>
+</body>
+<script th:src="@{/js/DPlayer.min.js}"></script>
+<script th:inline="javascript">
+    var course = [[${course}]]
+    console.log(course);
+    var img = course.img;
+    var videoUrl = course.video;
+    console.log(videoUrl);
+    const dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        preload: 'auto',
+        mutex: true,
+        video: {
+            url: videoUrl,
+            pic: img
+        },
+    });
+</script>
+</html>

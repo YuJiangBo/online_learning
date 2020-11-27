@@ -1,0 +1,12 @@
+#数据源
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/online_learning
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis:
+  #mapper.xml的位置。本人的是在resources的mapper文件夹里
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.cqie.pojo   #配置别名。表示pojo包下所有的实体类

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加课程</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{/css/myblog.css}">
+</head>
+<body>
+<!-- nav -->
+<nav class="navbar navbar-expand-md shadow m-bg-black px-md-3 px-3 navbar-dark">
+    <embed th:src="@{/img/logo.svg}" title="logo" width="65" height="65" class="img-fluid mx-5 my-1 my-md-0 m-logo-size m-mobile-logo-size"></embed>
+    <button class="navbar-toggler small" type="button" data-toggle="collapse" data-target="#Navbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="Navbar">
+        <div class="navbar-nav">
+            <a class="nav-link m-nav-btn px-md-3 mx-md-1 px-3 small nav-item m-scale" th:href="@{/index}">首页</a>
+        </div>
+    </div>
+    <a class="nav-link m-nav-btn px-md-3 px-3 mx-md-1 small m-opcity-m" th:href="@{/logout}">退出登录</a>
+</nav>
+<!-- main -->
+<div class="m-container-l m-mobile-lr-clear py-md-5 py-4">
+    <!-- type -->
+    <div class="container bg-white rounded border m-padding-lr-clear">
+        <div class="m-auto py-md-2 border-bottom ">
+            <div class="d-flex justify-content-between">
+                <h4 class="m-text-lightseagreen font-weight-bold ml-3">课程</h4>
+                <div class="m-font-s d-flex justify-content-center mr-3">共<span id="count" class="font-weight-bold m-text-orange" ></span>种</div>
+            </div>
+        </div>
+        <div class="py-3">
+            <div th:each="coursename,couStat:${courseName}" class="btn  btn-sm m-2 m-border-lightseagreen" th:text="${coursename.getCname()}">
+                <i class="badge m-badge-orange" th:text="${couStat.index}+1">1</i>
+            </div>
+        </div>
+    </div>
+    <!-- content -->
+    <div class="container mt-5 bg-white rounded-top border border-bottom-0 m-border-t">
+        <div>
+            <div class="row pt-md-2">
+                <div class="input-group mb-3 col-md-9 col-6">
+                    <form class="d-flex w-100" th:action="@{/searchCourse}" method="post">
+                        <input id="str" name="str" type="text" class="m-border-lightseagreen border form-control"  aria-label="Recipient's username" placeholder="🔍搜索课程(课程名/教师姓名)" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button type="submit" class="m-bg-lightseagreen m-border-lightseagreen border btn input-group-text" id="basic-addon2">Search...</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-3 col-6 text-center">
+                    <a th:href="@{/allCourse}" class="px-md-3 py-md-2 btn m-bg-lightseagreen"><i class="iconfont iconicon-test8 font-weight-bold"></i> 所 有 课 程</a>
+                </div>
+            </div>
+            <div class="mt-md-3 mt-3">
+                <div class="m-font-m m-border-orange border-bottom">所有课程</div>
+            </div>
+            <div id="chooseCou" class="mt-md-1 mt-1 d-flex flex-wrap justify-content-around">
+                <div th:each="course:${courses}" class="border mt-md-3 mt-2 rounded m-background" style="width: 250px;height: 280px;">
+                    <img class="img-fluid rounded-top" th:src="@{${course.getImg()}}" style="width: 250px;height: 170px;" alt="">
+                    <div>
+                        <h4 th:text="${course.getCname()}" class="mt-md-2 pl-md-3 pl-1"></h4>
+                        <div class="d-flex justify-content-between">
+                            <span class="m-text-content mt-md-2 pl-md-3 pl-1" th:text="${course.getTname()}"></span>
+                            <button id="add" type="button" class="btn mx-md-3 m-1 mr-2 py-0 btn-success" data-toggle="modal" data-target="#delCol">
+                                添加课程
+                            </button>
+                            <div class="modal fade" id="delCol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>确认添加课程</p>
+                                            <form id="addform" th:action="@{/doAdd}" method="post">
+                                                <input id="addid" name="addid" type="hidden">
+                                                <input id="addname" name="addname" type="hidden">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                            <button id="addsub" type="button" class=" btn btn-primary">确认</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<!-- footer -->
+<footer class="m-bg-black">
+    <div class="container">
+        <div class="row py-md-5 m-border-foot-b m-border-response-foot text-center">
+            <div class="col-md-2 py-3 m-border-foot m-mobile-border-foot m-border-response-foot">
+                <img th:src="@{/img/pic1.jpg}" style="width: 8em;height: 8em;">
+            </div>
+            <div class="col-md-3 py-3 m-mobile-border-foot m-border-foot m-border-response-foot">
+                <h5 class="text-center text-white m-opcity-l m-mouth">SERVICES</h5>
+                <div class="d-flex flex-column text-center">
+                    <a href="#" class="text-white m-opcity-m p-md-2">Training</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">Certification</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">Support</a>
+                </div>
+            </div>
+            <div class="col-md-3 py-3 m-mobile-border-foot m-border-foot m-border-response-foot">
+                <h5 class="text-center text-white m-opcity-l m-mouth">ABOUT</h5>
+                <div class="d-flex flex-column text-center">
+                    <a href="#" class="text-white m-opcity-m p-md-2">Contact Us</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">How To Buy</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">Partners</a>
+                </div>
+            </div>
+            <div class="col-md-4 py-3 m-mouth">
+                <h5 class="text-center text-white m-opcity-l">ANNOUNCE</h5>
+                <div class="ui inverted link list">
+                    <p class="text-center text-white m-opcity-m p-md-2">该在线学习系统仅用于学习。该在线学习系统仅用于学习。该在线学习系统仅用于学习。该在线学习系统仅用于学习。</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-white m-opcity-m py-3 m-0 small m-mouth">版权所有,翻版必究</p>
+    </div>
+</footer>
+</body>
+<script th:src="@{/js/jquery-3.4.0.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{/js/bootstrap.min.js}" type="text/javascript" charset="utf-8"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(function () {
+        var list = [[${courses}]]
+        console.log(list);
+        var courseName = [[${courseName}]]
+        $("#count").text(courseName.length)
+        //doAdd
+        $("#chooseCou #add").click(function () {
+            for (let i in list){
+                if (i == $("#chooseCou #add").index(this)){
+                    $("#addid").val(list[i].id)
+                    $("#addname").val(list[i].cname)
+                    $("#addsub").click(function () {
+                        $("#addform").submit();
+                    })
+                }
+            }
+        })
+
+    })
+    /*]]>*/
+</script>
+</html>

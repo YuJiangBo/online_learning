@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>课程管理</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{/css/myblog.css}">
+</head>
+<body>
+<!-- nav -->
+<nav class="navbar navbar-expand-md shadow m-bg-black px-md-3 px-3 navbar-dark">
+    <embed th:src="@{/img/logo.svg}" title="logo" width="65" height="65" class="m-logo img-fluid mx-5 my-1 my-md-0 m-logo-size m-mobile-logo-size"></embed>
+    <button class="navbar-toggler small" type="button" data-toggle="collapse" data-target="#Navbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="Navbar">
+        <div class="navbar-nav">
+            <a class="nav-link m-nav-btn px-md-3 mx-md-1 px-3 small nav-item m-scale" th:href="@{/teacher}">首页</a>
+            <a class="active  nav-link m-nav-btn px-md-3 px-3 mx-md-1 small nav-item m-scale" th:href="@{/tCourseManage}">课程管理</a>
+        </div>
+    </div>
+    <a class="nav-link m-nav-btn px-md-3 px-3 mx-md-1 small m-opcity-m" th:href="@{/logout}">退出登录</a>
+</nav>
+<!-- main -->
+<div class="m-container-l m-mobile-lr-clear py-md-5 py-4">
+    <!-- content -->
+    <div class="container mt-5 bg-white rounded-top border border-bottom-0 m-border-t">
+        <div>
+            <div class="row pt-md-2">
+                <div class="input-group mb-3 col-md-6 col-6">
+                    <form class="d-flex w-100" th:action="@{/tSearchCourse}" method="post">
+                        <input id="str" name="str" type="text" class="m-border-lightseagreen border form-control"  aria-label="Recipient's username" placeholder="🔍搜索课程(课程名)" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button type="submit" class="m-bg-lightseagreen m-border-lightseagreen border btn input-group-text" id="basic-addon2">Search...</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 col-6">
+                    <div class="w-100 d-flex justify-content-around">
+                        <a th:href="@{/tCourseManage}" class="px-md-3 py-md-2 btn m-bg-lightseagreen"><i class="iconfont iconicon-test8 font-weight-bold"></i> 所 有 课 程</a>
+                        <a th:href="@{/tAddCourse}" class="px-md-3 py-md-2 btn m-border-orange m-text-orange border"><span class="font-weight-bold">+</span> 添 加 课 程</a>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">课程编号</th>
+                        <th scope="col">课程名称</th>
+                        <th scope="col">授课教师</th>
+                        <th scope="col">状态</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="allcourse,allCourseStat:${allCourse}" class="align-middle">
+                        <th th:text="${allCourseStat.index}+1" scope="row" ></th>
+                        <td th:text="${allcourse.getId()}"></td>
+                        <td th:text="${allcourse.getCname()}"></td>
+                        <td th:text="${allcourse.getTname()}"></td>
+                        <td th:switch="${allcourse.getState()}==1">
+                            <span th:case="true" th:text="已开启"></span>
+                            <span th:case="false" th:text="已关闭"></span>
+                        </td>
+                        <td class="d-flex flex-wrap">
+                            <!-- 修改 -->
+                            <div id="update" class="d-inline-block" th:switch="${allcourse.getState()}==1">
+                                <button  type="button" th:case="true" class="btn-secondary btn mx-md-3 m-1 py-0" data-toggle="modal" data-target="#upCol">
+                                    关闭
+                                </button>
+                                <button type="button" th:case="false" class="btn-success btn mx-md-3 m-1 py-0" data-toggle="modal" data-target="#upCol">
+                                    开启
+                                </button>
+                            </div>
+                            <div class="modal fade" id="upCol" tabindex="-1" role="dialog" aria-labelledby="upcou" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="upcou">Confirm</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>确认修改该课程状态?</p>
+                                            <form id="changeForm" th:action="@{/tUpdateCouState}" method="post">
+                                                <input id="state" name="state" type="hidden">
+                                                <input id="upId" name="upId" type="hidden">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                            <button id="changeSub" type="button" class=" btn btn-primary">确认</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 删除 -->
+                            <button id="del" type="button" class="btn mx-md-3 m-1 py-0 btn-danger" data-toggle="modal" data-target="#delCol">
+                                删除
+                            </button>
+                            <div class="modal fade" id="delCol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>确认删除课程</p>
+                                            <form id="delForm" th:action="@{/tDeleteCourse}" method="post">
+                                                <input id="delCode" name="delCode" type="hidden">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                            <button id="delSub" type="button" class=" btn btn-primary">确认</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<!-- footer -->
+<footer class="m-bg-black">
+    <div class="container">
+        <div class="row py-md-5 m-border-foot-b m-border-response-foot text-center">
+            <div class="col-md-2 py-3 m-border-foot m-mobile-border-foot m-border-response-foot">
+                <img th:src="@{/img/pic1.jpg}" style="width: 8em;height: 8em;">
+            </div>
+            <div class="col-md-3 py-3 m-mobile-border-foot m-border-foot m-border-response-foot">
+                <h5 class="text-center text-white m-opcity-l m-mouth">SERVICES</h5>
+                <div class="d-flex flex-column text-center">
+                    <a href="#" class="text-white m-opcity-m p-md-2">Training</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">Certification</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">Support</a>
+                </div>
+            </div>
+            <div class="col-md-3 py-3 m-mobile-border-foot m-border-foot m-border-response-foot">
+                <h5 class="text-center text-white m-opcity-l m-mouth">ABOUT</h5>
+                <div class="d-flex flex-column text-center">
+                    <a href="#" class="text-white m-opcity-m p-md-2">Contact Us</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">How To Buy</a>
+                    <a href="#" class="text-white m-opcity-m p-md-2">Partners</a>
+                </div>
+            </div>
+            <div class="col-md-4 py-3 m-mouth">
+                <h5 class="text-center text-white m-opcity-l">ANNOUNCE</h5>
+                <div class="ui inverted link list">
+                    <p class="text-center text-white m-opcity-m p-md-2">该在线学习系统仅用于学习。该在线学习系统仅用于学习。该在线学习系统仅用于学习。该在线学习系统仅用于学习。</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-white m-opcity-m py-3 m-0 small m-mouth">版权所有,翻版必究</p>
+    </div>
+</footer>
+</body>
+<script th:src="@{/js/jquery-3.4.0.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{/js/bootstrap.min.js}" type="text/javascript" charset="utf-8"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(function () {
+        var list = [[${allCourse}]]
+        //修改
+        $("tbody #update").click(function () {
+            for (let i in list){
+                if (i == $("tbody #update").index(this)){
+                    $("#upId").val(list[i].id)
+                    if(list[i].state == 1){
+                        $("#state").val(0)
+                    }else {
+                        $("#state").val(1)
+                    }
+                    $("tbody #changeSub").click(function () {
+                        $("#changeForm").submit();
+                    })
+                }
+            }
+        })
+        //删除
+        $("tbody #del").click(function () {
+            for (let i in list){
+                if (i == $("tbody #del").index(this)){
+                    console.log(list[i].id)
+                    $("#delCode").val(list[i].id)
+                    $("tbody #delSub").click(function () {
+                        $("#delForm").submit();
+                    })
+                }
+            }
+        })
+    })
+    /*]]>*/
+</script>
+</html>
